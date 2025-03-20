@@ -1,91 +1,101 @@
+# Agentic AI Assistant
 
-# 🤖 Agentic AI Application
+A fully functional, modular Agentic AI system built using FastAPI, React, LangChain, OpenAI, PgVector, and Docker. This application enables autonomous task execution, RAG-based knowledge search, and PDF knowledge ingestion via intelligent agents.
 
-A fully functional Agentic AI system built using **LangChain**, **OpenAI**, and **Streamlit**, capable of autonomously decomposing high-level user goals into tasks and executing them using intelligent agents.
+====================================================
+📁 Project Structure:
+----------------------------------------------------
+agentic_ai/
+├── agentic_ai_backend/
+│   └── app/
+│       ├── api/              # FastAPI route handlers
+│       ├── core/             # Configuration & initialization
+│       ├── services/         # Agent, LLM, KnowledgeBase logic
+│       ├── utils/            # Helper functions & DB utils
+│       └── knowledge/        # PDF/RAG ingestion logic
+├── agentic_ai_frontend/
+│   └── src/                  # React-based UI
+├── env/.env                  # Environment configuration
+├── docker-compose.yaml       # Container definitions
+├── Makefile                  # Project utility commands
+├── setup.sh                  # One-click project setup script
+├── tests/                    # Unit/integration tests
+└── README.md
 
----
+====================================================
+🚀 Features:
+----------------------------------------------------
+- FastAPI-powered REST API backend
+- PDFUrlKnowledgeBase with vector search
+- PgVector (Postgres) vector database
+- OpenAI LLM assistant with RAG architecture
+- React-based interactive frontend
+- Docker-based deployment
+- Scalable modular structure
 
-## 🚀 Features
+====================================================
+⚙️ Setup Instructions:
+----------------------------------------------------
+1. Clone the repository
+   git clone https://github.com/yourusername/agentic-ai-assistant.git
+   cd agentic-ai-assistant
 
-- Task decomposition and execution using autonomous agents
-- Integrated tools: Web search, document parsers, code interpreters, etc.
-- Memory and context-aware agent orchestration
-- Interactive frontend built with Streamlit
-- Modular and scalable architecture
+2. Set up environment
+   cp env/.env.example env/.env
+   # Edit .env to include your keys and DB credentials
 
----
+3. Run with Docker Compose
+   docker-compose up --build
 
-## 🛠 Tech Stack
+   → Frontend: http://localhost:3000
+   → Backend API: http://localhost:8000/docs
 
-- Python 3.10+
+====================================================
+🔐 Environment Variables:
+----------------------------------------------------
+OPENAI_API_KEY=your_openai_api_key
+DB_URL=postgresql+psycopg://username:password@host:port/dbname
+
+====================================================
+🧠 Core Capabilities:
+----------------------------------------------------
+- Autonomous Agent Orchestration (via LangChain)
+- PDF Document Chunking and Embedding
+- RAG Search over Vector Database
+- Memory-aware Assistant Conversations
+- CLI & Web-based Assistant Interface
+
+====================================================
+📚 Use Cases:
+----------------------------------------------------
+- AI-powered research assistant
+- Customer support document search
+- Autonomous task execution engine
+- Document intelligence applications
+
+====================================================
+🧪 Testing:
+----------------------------------------------------
+Run tests using:
+   pytest tests/
+
+====================================================
+🙌 Acknowledgments:
+----------------------------------------------------
 - LangChain
-- OpenAI API
-- Streamlit
-- Tool integrations (Web Search, File Parser, etc.)
+- HuggingFace
+- OpenAI
+- PgVector
+- Inspired by Krish Naik’s Agentic AI System
 
----
+====================================================
+📬 Contact:
+----------------------------------------------------
+Sai Teja  
+Email: saiteja.cse.rymec@gmail.com  
+LinkedIn: https://linkedin.com/in/saitejanv
 
-## 📁 Project Structure
-
-```
-agentic-ai/
-│
-├── agno/                    # Core agent logic
-├── test_agents/            # Example agent test scripts
-├── tools/                  # Tool integrations
-├── prompts/                # Prompt templates
-├── utils/                  # Utility functions
-├── main.py                 # Streamlit UI entry point
-├── requirements.txt        # Python dependencies
-└── README.md               # Project documentation
-```
-
----
-
-## 🔧 Setup Instructions
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/krishnaik06/Agentic-AI-Application.git
-cd Agentic-AI-Application
-```
-
-### 2. Create and activate virtual environment
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Run the application
-```bash
-streamlit run main.py
-```
-
----
-
-## 📸 Screenshots
-*(Add screenshots of the Streamlit interface and agent execution flow here)*
-
----
-
-## 📚 Use Cases
-- Automated research assistant
-- Task planning and execution engine
-- AI-powered report generation
-- Intelligent agent-based workflows
-
----
-
-## 🙌 Acknowledgments
-Inspired by Krish Naik’s Agentic AI project: [YouTube Demo](https://www.youtube.com/watch?v=Kk4ukdWqKPM)  
-Original Repo: [GitHub Link](https://github.com/krishnaik06/Agentic-AI-Application)
-
----
-
-## 📬 Contact
-For queries or collaboration: **Sai Teja – saiteja.cse.rymec@gmail.com**
+====================================================
+⭐ Star This Project:
+----------------------------------------------------
+If you find this project useful, please give it a ⭐ on GitHub!
