@@ -2,27 +2,7 @@
 
 A fully functional, modular Agentic AI system built using FastAPI, React, LangChain, OpenAI, PgVector, and Docker. This application enables autonomous task execution, RAG-based knowledge search, and PDF knowledge ingestion via intelligent agents.
 
-====================================================
-📁 Project Structure:
-----------------------------------------------------
-agentic_ai/
-├── agentic_ai_backend/
-│   └── app/
-│       ├── api/              # FastAPI route handlers
-│       ├── core/             # Configuration & initialization
-│       ├── services/         # Agent, LLM, KnowledgeBase logic
-│       ├── utils/            # Helper functions & DB utils
-│       └── knowledge/        # PDF/RAG ingestion logic
-├── agentic_ai_frontend/
-│   └── src/                  # React-based UI
-├── env/.env                  # Environment configuration
-├── docker-compose.yaml       # Container definitions
-├── Makefile                  # Project utility commands
-├── setup.sh                  # One-click project setup script
-├── tests/                    # Unit/integration tests
-└── README.md
 
-====================================================
 🚀 Features:
 ----------------------------------------------------
 - FastAPI-powered REST API backend
@@ -33,7 +13,6 @@ agentic_ai/
 - Docker-based deployment
 - Scalable modular structure
 
-====================================================
 ⚙️ Setup Instructions:
 ----------------------------------------------------
 1. Clone the repository
@@ -50,13 +29,11 @@ agentic_ai/
    → Frontend: http://localhost:3000
    → Backend API: http://localhost:8000/docs
 
-====================================================
 🔐 Environment Variables:
 ----------------------------------------------------
 OPENAI_API_KEY=your_openai_api_key
 DB_URL=postgresql+psycopg://username:password@host:port/dbname
 
-====================================================
 🧠 Core Capabilities:
 ----------------------------------------------------
 - Autonomous Agent Orchestration (via LangChain)
@@ -65,7 +42,6 @@ DB_URL=postgresql+psycopg://username:password@host:port/dbname
 - Memory-aware Assistant Conversations
 - CLI & Web-based Assistant Interface
 
-====================================================
 📚 Use Cases:
 ----------------------------------------------------
 - AI-powered research assistant
@@ -73,13 +49,12 @@ DB_URL=postgresql+psycopg://username:password@host:port/dbname
 - Autonomous task execution engine
 - Document intelligence applications
 
-====================================================
+
 🧪 Testing:
 ----------------------------------------------------
 Run tests using:
    pytest tests/
 
-====================================================
 🙌 Acknowledgments:
 ----------------------------------------------------
 - LangChain
@@ -88,7 +63,6 @@ Run tests using:
 - PgVector
 - Inspired by Krish Naik’s Agentic AI System
 
-====================================================
 📬 Contact:
 ----------------------------------------------------
 Sai Teja  
