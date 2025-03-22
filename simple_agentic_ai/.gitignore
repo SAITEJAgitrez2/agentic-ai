@@ -1,0 +1,27 @@
+# Ignore virtual environment folder
+venv/
+.venv/
+
+# Ignore pip logs
+pip-log.txt
+
+# Ignore compiled Python files
+__pycache__/
+*.py[cod]
+*.pyo
+node_modules/
+# Ignore environment & cache files
+.env
+*.env
+*.egg-info/
+*.egg
+*.log
+
+# Byte-compiled / optimized / DLL files
+*.pyc
+*.pyd
+*.pdb
+
+# VSCode and IDE settings (optional)
+.vscode/
+.idea/

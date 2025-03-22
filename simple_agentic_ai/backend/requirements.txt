@@ -1,0 +1,7 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+sqlalchemy
+psycopg[binary]
+phi  # if you're using phi framework
+requests
