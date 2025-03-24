@@ -1,46 +1,57 @@
-import typer
-from typing import Optional, List
-from phi.assistant.assistant import Assistant
-from phi.storage.assistant.postgres import PgAssistantStorage
-from phi.knowledge.pdf import PDFUrlKnowledgeBase
-from phi.vectordb.pgvector import PgVector2
+from agno.agent import Agent, AgentMemory
+from agno.models.openai import OpenAIChat
+from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
+from agno.vectordb.pgvector import PgVector
+from agno.storage.agent.postgres import PostgresAgentStorage
+from agno.memory.db.postgres import PgMemoryDb
 
 import os
 from dotenv import load_dotenv
+
+# Load environment variables
 load_dotenv()
-os.environ["GROQ_API_KEY"]=os.getenv("GROQ_API_KEY")
+os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
+# PostgreSQL connection URL
 db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 
-knowledge_base=PDFUrlKnowledgeBase(
+# Set up the vector store with correct table name
+vector_db = PgVector(table_name="latest_ai_paper", db_url=db_url)
+
+# Set up PDF knowledge base
+knowledge_base = PDFUrlKnowledgeBase(
     urls=["https://fcs.tennessee.edu/wp-content/uploads/sites/23/2021/08/Cooking-Basics.pdf"],
-    vector_db=PgVector2(collection="latest ai paper",db_url=db_url)
-
+    vector_db=vector_db
 )
-knowledge_base.load()
-storage=PgAssistantStorage(table_name="pdf_assistant",db_url=db_url)
 
-def pdf_assistant(new: bool = False, user: str ="user"):
-    run_id: Optional[str]=None
-    if not new:
-        existing_run_ids: List[str]=storage.get_all_run_ids(user)
-        if len(existing_run_ids)>0:
-            run_id = existing_run_ids[0]
-    assistant = Assistant(
-        run_id=run_id,
-        user_id=user,
-        knowledge_base=knowledge_base,
-        storage=storage,
-        show_tool_calls=True,
-        search_knowledge=True,
-        read_chat_history=True,
-    )
-    if run_id is None:
-        run_id=assistant.run_id
-        print(f"Start Run {run_id}\n")
-    else:
-        print(f"Continuing run{run_id}\n")
-    assistant.cli_app(markdown=True)
-if __name__=="__main__":
-    typer.run(pdf_assistant)
+# Load the PDF embeddings
+knowledge_base.load(recreate=True, upsert=True)
+
+# Agent setup with memory and knowledge
+agent = Agent(
+    model=OpenAIChat(id="gpt-4o"),
+    knowledge=knowledge_base,
+    memory=AgentMemory(
+        db=PgMemoryDb(table_name="agent_memory", db_url=db_url),
+        create_user_memories=True,
+        create_session_summary=True,
+    ),
+    storage=PostgresAgentStorage(table_name="pdf_assistant_sessions", db_url=db_url),
+    add_history_to_messages=True,
+    num_history_responses=3,
+    read_chat_history=True,
+)
+
+if __name__ == "__main__":
+    print("Starting Agentic Assistant...\n")
+    while True:
+        try:
+            query = input("You: ")
+            if query.lower() in {"exit", "quit"}:
+                print("Exiting Assistant. Goodbye!")
+                break
+            agent.print_response(query, stream=True)
+        except KeyboardInterrupt:
+            print("\nExiting Assistant. Goodbye!")
+            break
