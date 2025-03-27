@@ -5,6 +5,7 @@ from agno.vectordb.pgvector import PgVector
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.memory.db.postgres import PgMemoryDb
 import os
+import os
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -12,7 +13,6 @@ load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
-# PostgreSQL connection URL
 db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 
 # Vector store

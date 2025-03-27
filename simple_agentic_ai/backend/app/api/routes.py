@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from app.core.services.assistant_engine import agent
 
@@ -6,9 +6,12 @@ router = APIRouter()
 
 class ChatRequest(BaseModel):
     message: str
-    session_id: str = "user"  # Optional: use UUID for multi-user later
+    session_id: str = "user"
 
 @router.post("/chat")
 async def chat(request: ChatRequest):
-    response = agent.chat(request.message)
-    return {"response": response}
+    try:
+        response = agent.respond(request.message, stream=False)  # use respond
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
