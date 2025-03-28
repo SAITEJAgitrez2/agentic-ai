@@ -18,7 +18,7 @@ export default function AssistantChat() {
     setMessages((prev) => [...prev, { role: "user", content: input }]);
 
     try {
-      const res = await axios.post("http://localhost:8000/chat", {
+      const res = await axios.post("http://localhost:8000/api/chat", {
         message: input,
         user: "user",
       });
@@ -33,7 +33,7 @@ export default function AssistantChat() {
   const ingestPdfUrl = async () => {
     if (!pdfUrl.trim()) return;
     try {
-      await axios.post("http://localhost:8000/ingest/url", { pdf_urls: [pdfUrl] });
+      await axios.post("http://localhost:8000/api/ingest/url", { pdf_urls: [pdfUrl] });
       alert("PDF successfully ingested!");
     } catch (err) {
       alert("Error ingesting PDF.");
@@ -47,7 +47,7 @@ export default function AssistantChat() {
     formData.append("file", pdfFile);
     
     try {
-      await axios.post("http://localhost:8000/ingest/upload", formData, {
+      await axios.post("http://localhost:8000/api/ingest/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       alert("PDF successfully uploaded!");
