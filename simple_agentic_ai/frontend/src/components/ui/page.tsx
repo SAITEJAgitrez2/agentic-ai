@@ -1,5 +1,4 @@
-import AssistantChat from "@/app/components/ui/AssistantChat";
-
+import AssistantChat from "@/components/ui/AssistantChat";
 
 export default function Home() {
   return (
