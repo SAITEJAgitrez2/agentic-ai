@@ -11,6 +11,8 @@ export default function AssistantChat() {
   const [input, setInput] = useState("");
   const [pdfUrl, setPdfUrl] = useState("");
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const sendMessage = async () => {
     if (!input.trim()) return;
@@ -29,17 +31,41 @@ export default function AssistantChat() {
 
     setInput("");
   };
+  {isLoading && (
+    <p className="text-sm text-gray-500 animate-pulse mb-2">📥 Ingesting PDF... Please wait</p>
+  )}
+  
 
   const ingestPdfUrl = async () => {
     if (!pdfUrl.trim()) return;
-    try {
-      await axios.post("http://localhost:8000/api/ingest/url", { pdf_urls: [pdfUrl] });
-      alert("PDF successfully ingested!");
-    } catch (err) {
-      alert("Error ingesting PDF.");
+  
+    const urls = pdfUrl
+      .split(/[\n,]+/) // split on commas or newlines
+      .map((u) => u.trim())
+      .filter((u) => u.length > 0);
+  
+    if (urls.length === 0) {
+      alert("Please enter at least one valid URL.");
+      return;
     }
-    setPdfUrl("");
+  
+    setIsLoading(true);
+    try {
+      const response = await axios.post("http://localhost:8000/api/ingest/url", {
+        pdf_urls: urls,
+      });
+      alert(response.data.message || "PDF(s) successfully ingested!");
+      setIsLoading(false);
+    } catch (err: any) {
+      const error = err.response?.data?.detail || "Error ingesting PDF(s).";
+      alert(error);
+    } finally {
+      setPdfUrl("");
+    }
   };
+  
+  
+  
 
   const ingestPdfFile = async () => {
     if (!pdfFile) return;
@@ -83,14 +109,56 @@ export default function AssistantChat() {
           value={pdfUrl}
           onChange={(e) => setPdfUrl(e.target.value)}
         />
-        <Button onClick={ingestPdfUrl}>Ingest PDF URL</Button>
+        {isLoading && (
+  <div className="flex items-center space-x-2 mb-2">
+    <div className="w-4 h-4 border-2 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
+    <span className="text-sm text-gray-600">Processing...</span>
+  </div>
+)}
 
-        <input
-          type="file"
-          accept="application/pdf"
-          onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-        />
-        <Button onClick={ingestPdfFile}>Upload PDF</Button>
+        <Button onClick={ingestPdfUrl} disabled={isLoading}>
+          {isLoading ? "Ingesting..." : "Ingest PDF URL"}
+        </Button>
+
+
+        <Button
+  disabled={isLoading}
+  onClick={() => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "application/pdf";
+    fileInput.onchange = async (e: any) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        setIsLoading(true);
+        await axios.post("http://localhost:8000/api/ingest/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+        alert("✅ PDF uploaded and ingested!");
+      } catch (err: any) {
+        alert("❌ Upload failed: " + (err?.response?.data?.detail || "Unknown error"));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fileInput.click(); // Trigger the file picker
+  }}
+>
+  {isLoading ? (
+    <div className="flex items-center space-x-2">
+      <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" />
+      <span>Uploading...</span>
+    </div>
+  ) : (
+    "Upload PDF"
+  )}
+</Button>
+
+
       </div>
     </Card>
   );

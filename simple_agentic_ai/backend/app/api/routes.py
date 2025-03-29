@@ -25,24 +25,48 @@ async def ingest_pdf_url(payload: dict):
         if not pdf_urls:
             raise ValueError("No PDF URLs provided.")
 
-        # Call `.load()` with the new URLs
-        agent.knowledge.urls = pdf_urls  # update the urls dynamically
-        agent.knowledge.load(recreate=False, upsert=True)
+        # Use PDFUrlKnowledgeBase here
+        from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
+        from app.core.services.assistant_engine import vector_db
 
-        print("✅ PDF ingestion complete")
+        kb = PDFUrlKnowledgeBase(urls=pdf_urls, vector_db=vector_db)
+        kb.load(upsert=True)
+
+        # Update agent knowledge if you want to query it immediately
+        from app.core.services.assistant_engine import agent
+        agent.knowledge = kb
+
         return {"message": f"{len(pdf_urls)} PDFs ingested successfully."}
     except Exception as e:
         print("❌ Error during ingestion:", str(e))
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=400, detail=f"❌ Error during ingestion: {str(e)}")
 
 
 
+import os
+
+from app.core.services.assistant_engine import agent, vector_db
+from agno.knowledge.pdf import PDFKnowledgeBase, PDFReader
 
 @router.post("/ingest/upload")
 async def ingest_pdf_upload(file: UploadFile = File(...)):
     try:
-        contents = await file.read()
-        agent.knowledge.load_file(file=contents, filename=file.filename, upsert=True)
-        return {"message": "PDF uploaded and ingested successfully."}
+        upload_dir = "data/pdfs"
+        os.makedirs(upload_dir, exist_ok=True)
+        file_path = os.path.join(upload_dir, file.filename)
+
+        with open(file_path, "wb") as f:
+            f.write(await file.read())
+
+        # Recreate knowledge base with updated path
+        updated_kb = PDFKnowledgeBase(
+            path=upload_dir,
+            vector_db=vector_db,
+            reader=PDFReader(chunk=True),
+        )
+        updated_kb.load(upsert=True)
+        agent.knowledge = updated_kb  # <-- Update the agent's knowledge
+
+        return {"message": "✅ PDF uploaded and ingested successfully."}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"❌ Upload failed: {str(e)}")

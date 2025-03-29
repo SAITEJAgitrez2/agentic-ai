@@ -1,10 +1,10 @@
 from agno.agent import Agent, AgentMemory
 from agno.models.openai import OpenAIChat
 from agno.knowledge.pdf_url import PDFUrlKnowledgeBase
+from agno.knowledge.pdf import PDFKnowledgeBase, PDFReader
 from agno.vectordb.pgvector import PgVector
 from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.memory.db.postgres import PgMemoryDb
-import os
 import os
 from dotenv import load_dotenv
 
@@ -13,29 +13,40 @@ load_dotenv()
 os.environ["GROQ_API_KEY"] = os.getenv("GROQ_API_KEY")
 os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
 
+# 1. Database connection URL
 db_url = "postgresql+psycopg://ai:ai@localhost:5532/ai"
 
-# Vector store
-vector_db = PgVector(table_name="latest_ai_paper", db_url=db_url)
+# 2. Shared vector store for both file and URL knowledge
+vector_db = PgVector(table_name="pdf_documents", db_url=db_url)
 
-# PDF knowledge base
-knowledge_base = PDFUrlKnowledgeBase(
-    urls=["https://fcs.tennessee.edu/wp-content/uploads/sites/23/2021/08/Cooking-Basics.pdf"],
-    vector_db=vector_db
+# 3. File-based knowledge base (used at startup)
+file_knowledge_base = PDFKnowledgeBase(
+    path="data/NIPS-2012-imagenet-classification-with-deep-convolutional-neural-networks-Paper.pdf",
+    vector_db=vector_db,
+    reader=PDFReader(chunk=True)
 )
-knowledge_base.load(recreate=True, upsert=True)
+
+# Optional: Load existing files on startup
+file_knowledge_base.load(recreate=True, upsert=True)
+
+# 4. URL-based knowledge base (used dynamically per request)
+def get_url_kb(urls: list):
+    return PDFUrlKnowledgeBase(
+        urls=urls,
+        vector_db=vector_db
+    )
 
 # Agent setup
 agent = Agent(
     model=OpenAIChat(id="gpt-4o"),
-    knowledge=knowledge_base,
+    knowledge=file_knowledge_base,
     memory=AgentMemory(
         db=PgMemoryDb(table_name="agent_memory", db_url=db_url),
         create_user_memories=True,
         create_session_summary=True,
     ),
-    storage=PostgresAgentStorage(table_name="pdf_assistant_sessions", db_url=db_url),
+    storage=PostgresAgentStorage(table_name="assistant_sessions", db_url=db_url),
     add_history_to_messages=True,
-    num_history_responses=3,
     read_chat_history=True,
+    num_history_responses=3,
 )
