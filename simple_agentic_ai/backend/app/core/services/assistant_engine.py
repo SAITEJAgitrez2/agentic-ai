@@ -7,6 +7,13 @@ from agno.storage.agent.postgres import PostgresAgentStorage
 from agno.memory.db.postgres import PgMemoryDb
 import os
 from dotenv import load_dotenv
+import logging
+
+logging.basicConfig(
+    filename="./app.log",  # <- make sure this path is valid
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 # Load environment variables
 load_dotenv()
@@ -21,7 +28,7 @@ vector_db = PgVector(table_name="pdf_documents", db_url=db_url)
 
 # 3. File-based knowledge base (used at startup)
 file_knowledge_base = PDFKnowledgeBase(
-    path="data/NIPS-2012-imagenet-classification-with-deep-convolutional-neural-networks-Paper.pdf",
+    path="../data/pdfs/NIPS-2012-imagenet-classification-with-deep-convolutional-neural-networks-Paper.pdf",
     vector_db=vector_db,
     reader=PDFReader(chunk=True)
 )

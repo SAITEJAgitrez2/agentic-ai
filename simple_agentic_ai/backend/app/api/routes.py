@@ -70,3 +70,24 @@ async def ingest_pdf_upload(file: UploadFile = File(...)):
         return {"message": "✅ PDF uploaded and ingested successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"❌ Upload failed: {str(e)}")
+
+from fastapi.responses import JSONResponse
+
+@router.get("/history")
+async def get_history(session_id: str = "user"):
+    try:
+        messages = agent.memory.get_messages(session_id=session_id)
+        return {"messages": messages}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@router.get("/logs")
+async def get_logs():
+    try:
+        with open("app/app.log", "r") as f:
+            log_data = f.read().splitlines()[-100:]  # latest 100 lines
+        return {"logs": log_data}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
