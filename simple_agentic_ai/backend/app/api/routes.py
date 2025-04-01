@@ -76,10 +76,12 @@ from fastapi.responses import JSONResponse
 @router.get("/history")
 async def get_history(session_id: str = "user"):
     try:
-        messages = agent.memory.get_messages(session_id=session_id)
-        return {"messages": messages}
+        agent.session_id = session_id  # make sure agent is in correct session
+        messages = agent.memory.get_messages()
+        return {"messages": [m.model_dump(include={"role", "content"}) for m in messages]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 

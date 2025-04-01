@@ -28,7 +28,7 @@ vector_db = PgVector(table_name="pdf_documents", db_url=db_url)
 
 # 3. File-based knowledge base (used at startup)
 file_knowledge_base = PDFKnowledgeBase(
-    path="../data/pdfs/NIPS-2012-imagenet-classification-with-deep-convolutional-neural-networks-Paper.pdf",
+    path="/home/saiteja/agentic-ai/simple_agentic_ai/backend/data/pdfs/NIPS-2012-imagenet-classification-with-deep-convolutional-neural-networks-Paper.pdf",
     vector_db=vector_db,
     reader=PDFReader(chunk=True)
 )
@@ -45,6 +45,8 @@ def get_url_kb(urls: list):
 
 # Agent setup
 agent = Agent(
+    session_id="user",         # default session_id
+    user_id="user",            # required for storage
     model=OpenAIChat(id="gpt-4o"),
     knowledge=file_knowledge_base,
     memory=AgentMemory(
@@ -52,8 +54,8 @@ agent = Agent(
         create_user_memories=True,
         create_session_summary=True,
     ),
-    storage=PostgresAgentStorage(table_name="assistant_sessions", db_url=db_url),
+    storage=vector_db,
     add_history_to_messages=True,
-    read_chat_history=True,
     num_history_responses=3,
+    read_chat_history=True,
 )
