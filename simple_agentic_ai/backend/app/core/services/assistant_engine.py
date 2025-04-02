@@ -50,9 +50,7 @@ agent = Agent(
     model=OpenAIChat(id="gpt-4o"),
     knowledge=file_knowledge_base,
     memory=AgentMemory(
-        db=PgMemoryDb(table_name="agent_memory", db_url=db_url),
-        create_user_memories=True,
-        create_session_summary=True,
+        db=vector_db
     ),
     storage=vector_db,
     add_history_to_messages=True,
