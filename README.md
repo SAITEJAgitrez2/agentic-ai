@@ -84,7 +84,6 @@ Sai Teja
 Email: saiteja.cse.rymec@gmail.com  
 LinkedIn: https://www.linkedin.com/in/sai-teja-narra-venkata-75265a249/
 
-====================================================
 ⭐ Star This Project:
 ----------------------------------------------------
 If you find this project useful, please give it a ⭐ on GitHub!
