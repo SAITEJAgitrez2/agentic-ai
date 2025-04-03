@@ -1,73 +1,88 @@
-# Agentic AI Assistant
+# 🧠 Simple Agentic AI Assistant (PDF-based RAG Chatbot)
 
-A fully functional, modular Agentic AI system built using FastAPI, React, LangChain, OpenAI, PgVector, and Docker. This application enables autonomous task execution, RAG-based knowledge search, and PDF knowledge ingestion via intelligent agents.
+This is a full-stack AI assistant that uses Retrieval-Augmented Generation (RAG) to enable conversations grounded in PDF documents. It supports both **URL-based** and **file-based** PDF ingestion, persistent chat history, and system logs.
 
+## ✨ Features
 
-🚀 Features:
-----------------------------------------------------
-- FastAPI-powered REST API backend
-- PDFUrlKnowledgeBase with vector search
-- PgVector (Postgres) vector database
-- OpenAI LLM assistant with RAG architecture
-- React-based interactive frontend
-- Docker-based deployment
-- Scalable modular structure
+- Chat interface powered by OpenAI GPT-4o.
+- RAG using PDF documents (from file upload or URL).
+- Vector search with PgVector and PostgreSQL.
+- Persistent session memory with `PostgresAgentStorage`.
+- Display chat history per session.
+- View system logs from the backend.
+- Clean UI with Next.js, TailwindCSS, Axios.
 
-⚙️ Setup Instructions:
-----------------------------------------------------
-1. Clone the repository
-   git clone https://github.com/yourusername/agentic-ai-assistant.git
-   cd agentic-ai-assistant
+## 🖼️ Frontend Stack
 
-2. Set up environment
-   cp env/.env.example env/.env
-   # Edit .env to include your keys and DB credentials
+- [Next.js 15+](https://nextjs.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Axios](https://axios-http.com/)
+- TypeScript, React, ShadCN UI
 
-3. Run with Docker Compose
-   docker-compose up --build
+## 🧠 Backend Stack
 
-   → Frontend: http://localhost:3000
-   → Backend API: http://localhost:8000/docs
-
-🔐 Environment Variables:
-----------------------------------------------------
-OPENAI_API_KEY=your_openai_api_key
-DB_URL=postgresql+psycopg://username:password@host:port/dbname
-
-🧠 Core Capabilities:
-----------------------------------------------------
-- Autonomous Agent Orchestration (via LangChain)
-- PDF Document Chunking and Embedding
-- RAG Search over Vector Database
-- Memory-aware Assistant Conversations
-- CLI & Web-based Assistant Interface
-
-📚 Use Cases:
-----------------------------------------------------
-- AI-powered research assistant
-- Customer support document search
-- Autonomous task execution engine
-- Document intelligence applications
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Agno](https://docs.agno.com/introduction)
+- [PgVector](https://github.com/pgvector/pgvector)
+- PostgreSQL (vector DB + memory DB)
+- dotenv, logging
 
 
-🧪 Testing:
-----------------------------------------------------
-Run tests using:
-   pytest tests/
+## ⚙️ Setup Instructions
 
-🙌 Acknowledgments:
-----------------------------------------------------
-- LangChain
-- HuggingFace
-- OpenAI
-- PgVector
-- Inspired by Krish Naik’s Agentic AI System
+### 1. Clone and Setup Backend
 
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Ensure you have a working PostgreSQL instance and `pgvector` installed.
+Use OpenAI api key in agentic-ai/simple_agentic_ai/backend/.env 
+### 2. Clone and Setup Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Access frontend at: [http://localhost:3000](http://localhost:3000)
+
+## 🧪 API Endpoints
+
+| Method | Endpoint             | Description                    |
+|--------|----------------------|--------------------------------|
+| POST   | `/api/chat`          | Chat with the assistant        |
+| POST   | `/api/ingest/url`    | Ingest PDF from URL            |
+| POST   | `/api/ingest/upload` | Upload local PDF               |
+| GET    | `/api/history`       | Fetch session chat history     |
+| GET    | `/api/logs`          | View system logs (last 100)    |
+
+## 💡 Example Prompt
+
+```
+What is this document about?
+Summarize key points in bullet format.
+```
+
+## 📌 Notes
+
+- All uploaded PDFs go to `backend/data/pdfs/`.
+- PDF ingestion updates the agent's knowledge in real time.
+- Session ID defaults to `"user"` unless explicitly set.
+
+---
+
+Created with ❤️ by Sai Teja.
 📬 Contact:
 ----------------------------------------------------
 Sai Teja  
 Email: saiteja.cse.rymec@gmail.com  
-LinkedIn: https://linkedin.com/in/saitejanv
+LinkedIn: https://www.linkedin.com/in/sai-teja-narra-venkata-75265a249/
 
 ====================================================
 ⭐ Star This Project:
