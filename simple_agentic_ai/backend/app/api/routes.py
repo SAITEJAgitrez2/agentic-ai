@@ -67,7 +67,7 @@ async def ingest_pdf_upload(file: UploadFile = File(...)):
         updated_kb.load(upsert=True)
         agent.knowledge = updated_kb  # <-- Update the agent's knowledge
 
-        return {"message": "✅ PDF uploaded and ingested successfully."}
+        return {"message": " PDF uploaded and ingested successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"❌ Upload failed: {str(e)}")
 
@@ -88,7 +88,7 @@ async def get_history(session_id: str = "user"):
 @router.get("/logs")
 async def get_logs():
     try:
-        with open("app/app.log", "r") as f:
+        with open("app.log", "r") as f:
             log_data = f.read().splitlines()[-100:]  # latest 100 lines
         return {"logs": log_data}
     except Exception as e:
