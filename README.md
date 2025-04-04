@@ -75,9 +75,9 @@ Summarize key points in bullet format.
 - PDF ingestion updates the agent's knowledge in real time.
 - Session ID defaults to `"user"` unless explicitly set.
 ### Images 
-![Home Page](images/screenshot-128.png)
-![Chat Interaction](images/screenshot-129.png)
-![System Logs](images/screenshot-130.png)
+![Home Page](images/Screenshot-128.png)
+![Chat Interaction](images/Screenshot-129.png)
+![System Logs](images/Screenshot-130.png)
 ---
 
 📬 Contact:
